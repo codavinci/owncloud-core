@@ -5,7 +5,7 @@ Feature: delete users
   So that I can remove users
 
   Background:
-    Given these users have been created with default attributes and large skeleton files but not initialized:
+    Given these users have been created with default attributes and without skeleton files:
       | username |
       | Alice    |
       | Brian    |

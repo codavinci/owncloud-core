@@ -5,18 +5,15 @@ Feature: Autocompletion of share-with names
   So that I can efficiently share my files with other users or groups
 
   Background:
-    Given these users have been created with large skeleton files:
-      | username               | password  | displayname   | email        |
-      | autocomplete-test-user | %regular% | Thomas Krause | ur@oc.net.np |
-      | another-test-user      | %regular% | Another Name  | an@oc.com.np |
-    # Some extra users without skeleton files to make the share autocompletion interesting
-    And these users have been created without skeleton files:
-      | username   | password  | displayname     | email          |
-      | jb1        | %regular% | James Baker     | jb@oc.com.np   |
-      | u444       | %regular% | Four            | u4@oc.com.np   |
-      | five       | %regular% | User Five       | five@oc.net.np |
-      | usersmith  | %regular% | John Finn Smith | js@oc.com.de   |
-      | anne-smith | %regular% | Anne Smith      | as@oc.com.au   |
+    Given these users have been created without skeleton files:
+      | username               | password  | displayname     | email          |
+      | autocomplete-test-user | %regular% | Thomas Krause   | ur@oc.net.np   |
+      | jb1                    | %regular% | James Baker     | jb@oc.com.np   |
+      | u444                   | %regular% | Four            | u4@oc.com.np   |
+      | five                   | %regular% | User Five       | five@oc.net.np |
+      | usersmith              | %regular% | John Finn Smith | js@oc.com.de   |
+      | anne-smith             | %regular% | Anne Smith      | as@oc.com.au   |
+    And user "autocomplete-test-user" has created folder "simple-folder"
     And these groups have been created:
       | groupname     |
       | finance1      |
@@ -58,7 +55,7 @@ Feature: Autocompletion of share-with names
     Given the administrator has set the minimum characters for sharing autocomplete to "4"
     And user "autocomplete-test-user" has logged in using the webUI
     And the user has browsed to the files page
-    And these users have been created with large skeleton files but not initialized:
+    And these users have been created with small skeleton files but not initialized:
       | username | password | displayname | email        |
       | fiv      | %alt1%   | Someone     | fi@oc.com.np |
     And the user has opened the share dialog for folder "simple-folder"

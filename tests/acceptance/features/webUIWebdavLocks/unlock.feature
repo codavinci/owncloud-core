@@ -6,9 +6,10 @@ Feature: Unlock locked files and folders
 
   Background:
     #do not set email, see bugs in https://github.com/owncloud/core/pull/32250#issuecomment-434615887
-    Given these users have been created with large skeleton files:
-      | username       |
+    Given these users have been created with default attributes and without skeleton files:
+      | username  |
       | brand-new-user |
+    And user "brand-new-user" has uploaded file with content "some content" to "/lorem.txt"
     And user "brand-new-user" has logged in using the webUI
 
   Scenario: unlocking by webDAV deletes the lock symbols at the correct files/folders
@@ -19,12 +20,14 @@ Feature: Unlock locked files and folders
     Then folder "simple-folder" should not be marked as locked on the webUI
 
   Scenario: unlocking by webDAV after the display name has been changed deletes the lock symbols at the correct files/folders
-    Given these users have been created with large skeleton files:
+    Given these users have been created with default attributes and without skeleton files:
       | username               | displayname   |
       | user-with-display-name | My fancy name |
+    And user "user-with-display-name" has uploaded file with content "some content" to "/lorem.txt"
+    And user "user-with-display-name" has created folder "simple-folder"
     Given user "user-with-display-name" has locked folder "simple-folder" setting the following properties
       | lockscope | shared |
-    And user "user-with-display-name" has locked file "data.zip" setting the following properties
+    And user "user-with-display-name" has locked file "lorem.txt" setting the following properties
       | lockscope | exclusive |
     And the administrator has changed the display name of user "user-with-display-name" to "An ordinary name"
     When user "user-with-display-name" unlocks the last created lock of folder "simple-folder" using the WebDAV API
@@ -110,6 +113,7 @@ Feature: Unlock locked files and folders
       | exclusive |
       | shared    |
 
+    ###### needs investigation
   # This scenario depends on the order of locks displayed on the UI.
   # Pgsql and Oracle database can have different sorting, so allow this scenario to be skipped on those
   @skipOnFIREFOX @files_sharing-app-required @skipOnLDAP @skipOnDbPgsql @skipOnDbOracle
@@ -118,6 +122,8 @@ Feature: Unlock locked files and folders
       | username  |
       | receiver1 |
       | receiver2 |
+#    And user "receiver1" has uploaded file with content "receiver1 content" to "/lorem.txt"
+#    And user "receiver2" has uploaded file with content "receiver2 content" to "/lorem.txt"
     And the user has created folder "/FOLDER_TO_SHARE"
     And user "brand-new-user" has shared file "/lorem.txt" with user "receiver1"
     And user "brand-new-user" has shared folder "/FOLDER_TO_SHARE" with user "receiver1"
@@ -235,9 +241,10 @@ Feature: Unlock locked files and folders
 
   @files_sharing-app-required @skipOnLDAP @skipOnOcV10.3 @skipOnOcV10.4 @skipOnOcV10.5
   Scenario Outline: deleting a lock that was created by an other user
-    Given these users have been created with large skeleton files:
+    Given these users have been created with default attributes and without skeleton files:
       | username  |
       | receiver1 |
+    And user "receiver1" has uploaded file with content "some content" to "/lorem.txt"
     And user "brand-new-user" has shared file "/lorem.txt" with user "receiver1"
     And user "receiver1" has locked file "lorem (2).txt" setting the following properties
       | lockscope | <lockscope> |

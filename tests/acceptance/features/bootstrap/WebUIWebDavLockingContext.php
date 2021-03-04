@@ -148,6 +148,7 @@ class WebUIWebDavLockingContext extends RawMinkContext implements Context {
 			}
 		}
 		$locks = $lockDialog->getAllLocks();
+		sleep(10);
 		foreach ($locks as $lock) {
 			$locker = $lock->getLockingUser();
 			if ($lockedBy === $locker) {

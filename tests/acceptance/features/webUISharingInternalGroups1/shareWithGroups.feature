@@ -9,28 +9,30 @@ Feature: Sharing files and folders with internal groups
       | username |
       | Alice    |
       | Brian    |
-    And user "Carol" has been created with default attributes and large skeleton files
+      | Carol    |
     And these groups have been created:
       | groupname |
       | grp1      |
     And user "Alice" has been added to group "grp1"
     And user "Brian" has been added to group "grp1"
+    And user "Carol" has created folder "simple-folder"
+    And user "Carol" has uploaded file with content "some content" to "/lorem.txt"
 
   @smokeTest
   Scenario: share a folder with an internal group
     Given user "Carol" has logged in using the webUI
     When the user shares folder "simple-folder" with group "grp1" using the webUI
-    And the user shares file "testimage.jpg" with group "grp1" using the webUI
+    And the user shares file "lorem.txt" with group "grp1" using the webUI
     And the user re-logs in as "Alice" using the webUI
     Then folder "simple-folder" should be listed on the webUI
     And folder "simple-folder" should be marked as shared with "grp1" by "Carol" on the webUI
-    And file "testimage.jpg" should be listed on the webUI
-    And file "testimage.jpg" should be marked as shared with "grp1" by "Carol" on the webUI
+    And file "lorem.txt" should be listed on the webUI
+    And file "lorem.txt" should be marked as shared with "grp1" by "Carol" on the webUI
     When the user re-logs in as "Brian" using the webUI
     Then folder "simple-folder" should be listed on the webUI
     And folder "simple-folder" should be marked as shared with "grp1" by "Carol" on the webUI
-    And file "testimage.jpg" should be listed on the webUI
-    And file "testimage.jpg" should be marked as shared with "grp1" by "Carol" on the webUI
+    And file "lorem.txt" should be listed on the webUI
+    And file "lorem.txt" should be marked as shared with "grp1" by "Carol" on the webUI
 
   @skipOnFIREFOX
   Scenario: share a file with an internal group a member overwrites and unshares the file
@@ -169,7 +171,7 @@ Feature: Sharing files and folders with internal groups
   @mailhog @skipOnLDAP @skipOnOcV10.3
   Scenario: user should not get an email notification if the user is added to the group after the mail notification was sent
     Given parameter "shareapi_allow_mail_notification" of app "core" has been set to "yes"
-    And user "David" has been created with default attributes and large skeleton files
+    And user "David" has been created with default attributes and without skeleton files
     And user "Carol" has logged in using the webUI
     And user "Carol" has shared file "lorem.txt" with group "grp1"
     And the user has opened the share dialog for file "lorem.txt"
