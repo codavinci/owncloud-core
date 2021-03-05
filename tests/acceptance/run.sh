@@ -203,6 +203,10 @@ function remote_occ() {
 	return ${RETURN}
 }
 
+function remote_bulk_occ() {
+
+}
+
 # @param $1 admin authentication string username:password
 # @param $2 occ url
 # @param $3 directory to create, relative to the server's root
@@ -951,6 +955,7 @@ SETTINGS+=("system;;skeletondirectory;;")
 # Set various settings
 for URL in ${OCC_URL} ${OCC_FED_URL}
 do
+  declare SETTINGS_CMDS='['
 	for i in "${!SETTINGS[@]}"
 	do
 		PREVIOUS_IFS=${IFS}
@@ -968,6 +973,7 @@ do
 		fi
 
 		remote_occ ${ADMIN_AUTH} ${URL} "config:${SETTING[0]}:set ${SETTING[1]} ${SETTING[2]} --value=${SETTING[3]}${TYPE_STRING}"
+		SETTINGS_CMDS+="{\"command\": \"config:${SETTING[0]}:set ${SETTING[1]} ${SETTING[2]} --value=${SETTING[3]}${TYPE_STRING}\"},"
 		if [ $? -ne 0 ]
 		then
 			echo -e "Could not set ${SETTING[2]} on ${URL}. Result:\n'${REMOTE_OCC_STDERR}'"
@@ -975,6 +981,9 @@ do
 			exit 1
 		fi
 	done
+	SETTINGS_CMDS=${SETTINGS_CMDS%?} # removes the last comma
+	SETTINGS_CMDS+="]"
+	echo ${SETTINGS_CMDS} | jq
 done
 
 #set the skeleton folder
